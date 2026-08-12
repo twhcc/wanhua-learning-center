@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>萬華社區大學｜在地永續學習中心</title>
+<meta name="description" content="萬華社區大學在地永續學習中心：課程、教師人才、地方知識、出版品與學員學習故事。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="brand" data-page="home" aria-label="回首頁">
+    <img src="assets/brand/wanhua-logo.png" alt="萬華社區大學 Logo">
+    <span><strong>萬華社區大學</strong><small>在地永續學習中心</small></span>
+  </button>
+  <nav>
+    <button data-page="home" class="nav-btn active">首頁</button>
+    <button data-page="courses" class="nav-btn">課程探索</button>
+    <button data-page="teachers" class="nav-btn">教師人才庫</button>
+    <button data-page="stories" class="nav-btn">學員故事</button>
+    <button data-page="publications" class="nav-btn">教師出版品</button>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">WANHUA COMMUNITY COLLEGE · LOCAL LIFELONG LEARNING</p>
+      <h1>讓地方成為<br><em>一所沒有圍牆的學校</em></h1>
+      <p class="hero-text">從 194 門課程出發，串起教師專業、地方知識、SDGs、出版成果與每一位學員留下的學習故事。</p>
+      <div class="hero-actions">
+        <button class="primary" data-page="teachers">探索教師人才庫 →</button>
+        <button class="secondary" data-page="stories">看 115-1 學員故事</button>
+      </div>
+      <div class="hero-tags"><span>萬華地方學</span><span>永續實踐</span><span>活躍老化</span><span>終身學習</span></div>
+    </div>
+    <div class="hero-brand">
+      <img src="assets/brand/wanhua-logo.png" alt="臺北市萬華社區大學">
+      <div class="hero-note"><b>課程 × 人才 × 地方知識 × 學習成果</b><span>把校務架構轉化成每個人都能使用的學習入口</span></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div><b id="statCourses">194</b><span>115 秋課程</span></div>
+    <div><b id="statTeachers">152</b><span>教師人才資料</span></div>
+    <div><b id="statStories">23</b><span>115-1 學習故事</span></div>
+    <div><b>3 × 4</b><span>領域 × 學群</span></div>
+  </div>
+
+  <section class="concept">
+    <div><p class="eyebrow">LEARNING ECOSYSTEM</p><h2>不是另一個課程網站，<br>而是一張萬華的學習知識網</h2></div>
+    <p>同一筆資料可以被不同入口看見：從老師找到課程，從課程找到 SDGs 與領域，從學員故事看見學習如何發生，再從出版品回到地方知識的累積。</p>
+  </section>
+
+  <div class="map-grid">
+    <article class="accent-green"><span>01</span><h3>課程探索</h3><p>以類別、三大領域、四大學群及 SDGs 找課，不只看「課名」，也看課程在整體學習架構中的位置。</p><button data-page="courses">探索課程 →</button></article>
+    <article class="accent-yellow"><span>02</span><h3>教師人才</h3><p>從專長與授課經驗認識老師，逐步加入出版品、地方實踐與跨課程合作，形成學校的人才知識庫。</p><button data-page="teachers">尋找人才 →</button></article>
+    <article class="accent-lime"><span>03</span><h3>學習故事</h3><p>本版已整理 115-1 心得 ZIP，辨識 23 組課程資料並建置照片牆與心得全文。</p><button data-page="stories">閱讀故事 →</button></article>
+  </div>
+</section>
+
+<section id="courses" class="page">
+  <div class="page-head"><p class="eyebrow">COURSE EXPLORER</p><h2>課程探索</h2><p>從課程內容、教師、領域、學群與 SDGs 找到適合你的學習路徑。</p></div>
+  <div class="filters">
+    <input id="courseSearch" placeholder="搜尋課程名稱、內容或教師……">
+    <select id="courseCategory"><option value="">全部類別</option><option>學術類</option><option>社團類</option><option>生活藝能類</option></select>
+    <select id="courseDomain"><option value="">全部領域</option><option>萬華地方學</option><option>永續實踐</option><option>活躍老化</option></select>
+    <select id="courseGroup"><option value="">全部學群</option><option>A環境永續</option><option>B族群關懷</option><option>C社區培力</option><option>D文化深耕</option></select>
+  </div>
+  <div class="result-line"><span id="courseCount"></span><button id="clearCourse">清除篩選</button></div>
+  <div id="courseGrid" class="card-grid"></div>
+</section>
+
+<section id="teachers" class="page">
+  <div class="page-head"><p class="eyebrow">LOCAL LEARNING TALENT</p><h2>教師人才庫</h2><p>以「專長 × 課程 × 領域 × 地方知識」認識萬華社大的教師群。</p></div>
+  <div class="talent-banner">
+    <div><strong>你想找什麼樣的老師？</strong><span>可以搜尋專長、課程、領域、姓名或學群</span></div>
+    <input id="teacherSearch" placeholder="例如：文史、攝影、瑜珈、日語、金工……">
+  </div>
+  <div class="tag-filter" id="teacherTags"></div>
+  <div class="result-line"><span id="teacherCount"></span></div>
+  <div id="teacherGrid" class="card-grid"></div>
+</section>
+
+<section id="teacherDetail" class="page"><button class="back" data-page="teachers">← 回到教師人才庫</button><div id="teacherDetailContent"></div></section>
+<section id="courseDetail" class="page"><button class="back" data-page="courses">← 回到課程探索</button><div id="courseDetailContent"></div></section>
+
+<section id="stories" class="page">
+  <div class="page-head"><p class="eyebrow">115-1 LEARNING STORIES</p><h2>學員學習故事</h2><p>從原始 ZIP 的資料夾名稱、心得文件內容與教師資訊交叉辨識課程；點擊卡片可閱讀心得與瀏覽照片。</p></div>
+  <div class="story-toolbar">
+    <input id="storySearch" placeholder="搜尋課程、老師、心得內容……">
+    <select id="storyType"><option value="">全部故事</option><option value="text">有文字心得</option><option value="photo">影像紀錄</option></select>
+  </div>
+  <div class="result-line"><span id="storyCount"></span><a href="115-1學員心得_課程辨識對照表.csv" download>下載課程辨識對照表</a></div>
+  <div id="storyGrid" class="story-grid"></div>
+</section>
+
+<section id="storyDetail" class="page"><button class="back" data-page="stories">← 回到學員故事</button><div id="storyDetailContent"></div></section>
+
+<section id="publications" class="page">
+  <div class="page-head"><p class="eyebrow">TEACHER PUBLICATIONS</p><h2>教師出版品與知識成果</h2><p>保留既有 Google Sites 出版品網站，讓本平台專注在「人才、課程與成果的串連」。</p></div>
+  <div class="publication-hero">
+    <img src="assets/brand/wanhua-logo.png" alt="">
+    <div><span class="eyebrow">WHCC BOOKS</span><h3>萬華社大教師出版品專區</h3><p>書籍、刊物、地方書寫、研究、教材與創作成果，都可以由教師人物誌直接連到既有出版品網站。</p></div>
+    <a id="publicationLink" class="primary link-btn" target="_blank" rel="noopener">前往出版品網站 →</a>
+  </div>
+  <div class="publication-layout">
+    <div><h3>網站角色分工</h3><ul><li><b>本平台：</b>老師是誰、教什麼、專長與成果如何串聯</li><li><b>既有出版品站：</b>完整展示書籍、刊物與知識成果</li><li><b>未來：</b>每一筆出版品回連教師人物誌與相關課程</li></ul></div>
+    <div class="quote">「把老師的專業留下來，讓一門課累積成一座城市的知識。」</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <img src="assets/brand/wanhua-logo.png" alt="萬華社區大學">
+  <div><strong>臺北市萬華社區大學｜在地永續學習中心</strong><span>課程 × 人才 × 地方知識 × 學習成果</span></div>
+  <small>Demo v0.2｜115 秋課程資料 × 115-1 學員心得與影像紀錄</small>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
