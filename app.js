@@ -1,4 +1,16 @@
 
+function teacherPhoto(t, cls="avatar"){
+  if(t && t.photo_url) return `<div class="${cls}"><img src="${esc(t.photo_url)}" alt="${esc(t.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='${esc(initial(t.name))}'"></div>`;
+  return `<div class="${cls}">${esc(initial(t?.name||"萬"))}</div>`;
+}
+function verifiedLine(t){
+  return t && t.verified_note ? `<span class="verify">✓ 已對照公開課程資料</span>` : "";
+}
+function officialLink(t){
+  return t && t.official_url ? `<a class="official-link" href="${esc(t.official_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">查看萬華社大公開課程資料 →</a>` : "";
+}
+
+
 const D = window.WANHUA_DATA;
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -55,8 +67,8 @@ function renderTeachers(){
   $("#teacherCount").textContent=`找到 ${list.length} 位教師`;
   $("#teacherGrid").innerHTML=list.map(t=>`
     <article class="teacher-card" data-teacher="${esc(t.id)}">
-      <div class="teacher-top"><div class="avatar">${esc(initial(t.name))}</div><div><div class="mini">萬華社區大學教師</div><h3>${esc(t.name)}</h3></div></div>
-      <p class="specialty">${esc(t.specialties.slice(0,3).join("｜")||"專長資料待補")}</p>
+      <div class="teacher-top">${teacherPhoto(t)}<div><div class="mini">萬華社區大學教師</div><h3>${esc(t.name)}</h3></div></div>
+      <p class="specialty">${esc((t.verified_specialty||t.specialties.slice(0,3).join("｜")||"專長資料待補"))}</p>${verifiedLine(t)}
       <div class="chips">${chips(t.domains)}${chips(t.groups.slice(0,2),"gold")}</div>
       <div class="mini" style="margin-top:14px">授課 ${t.courses.length} 門 · 查看完整人物誌 →</div>
     </article>`).join("");
@@ -70,8 +82,8 @@ function openTeacher(id){
   const related=D.courses.filter(c=>t.courses.includes(c.name));
   const teacherStories=(D.stories||[]).filter(s=>s.teacher===t.name || t.courses.includes(s.course));
   $("#teacherDetailContent").innerHTML=`
-    <div class="detail-hero"><div class="avatar">${esc(initial(t.name))}</div>
-      <div><div class="eyebrow">LOCAL LEARNING TALENT</div><h2>${esc(t.name)}</h2><p>${esc(t.bio)}</p><div class="detail-tags">${chips(t.specialties)}${chips(t.domains)}${chips(t.groups,"gold")}</div></div>
+    <div class="detail-hero">${teacherPhoto(t)}
+      <div><div class="eyebrow">LOCAL LEARNING TALENT</div><h2>${esc(t.name)}</h2><p>${esc(t.bio)}</p><div class="detail-tags">${chips(t.specialties)}${chips(t.domains)}${chips(t.groups,"gold")}</div>${officialLink(t)}</div></div>
     </div>
     <div class="detail-section"><h3>📚 在萬華社大授課</h3><div class="course-list">${related.map(c=>`<div class="course-link" data-course="${esc(c.id)}"><b>${esc(c.name)}</b><div class="mini">${esc(c.category)} · ${esc(c.group)}</div></div>`).join("")}</div></div>
     ${teacherStories.length?`<div class="detail-section"><h3>💬 115-1 學員故事</h3><div class="course-list">${teacherStories.map(s=>`<div class="course-link" data-story="${esc(s.id)}"><b>${esc(s.title)}</b><div class="mini">${s.images.length} 張照片</div></div>`).join("")}</div></div>`:""}
@@ -137,3 +149,27 @@ function openStory(id){
 
 $("#publicationLink").href=D.site.publication_url;
 renderCourses();renderTeacherTags();renderTeachers();renderStories();
+
+
+function renderHome(){
+  const featureNames=["李欣融","陳建志","吳讚軒","林淑媛","陳金泉"];
+  const featured=featureNames.map(n=>D.teachers.find(t=>t.name===n)).filter(Boolean).slice(0,5);
+  const f=$("#featuredTeacherGrid");
+  if(f) f.innerHTML=featured.map(t=>`
+    <article class="featured-teacher" data-teacher="${esc(t.id)}">
+      <div class="teacher-media">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="${esc(t.name)}" loading="lazy" referrerpolicy="no-referrer">`:`<div class="teacher-initial">${esc(initial(t.name))}</div>`}</div>
+      <div class="teacher-copy"><div class="mini">${esc(t.domains.slice(0,2).join("・")||"萬華社大教師")}</div><h3>${esc(t.name)}</h3><p>${esc(t.verified_specialty||t.specialties.slice(0,2).join("｜")||"教師專業資料")}</p>${verifiedLine(t)}</div>
+    </article>`).join("");
+  if(f) f.querySelectorAll("[data-teacher]").forEach(el=>el.onclick=()=>openTeacher(el.dataset.teacher));
+  const hs=$("#homeStoryGrid");
+  if(hs){
+    hs.innerHTML=(D.stories||[]).slice(0,3).map(s=>{
+      const cover=s.images&&s.images[0];
+      return `<article class="story-card" data-story="${esc(s.id)}"><div class="story-cover ${cover?"":"no-photo"}">${cover?`<img src="${esc(cover)}" alt="${esc(s.course)}">`:`<img src="assets/brand/wanhua-logo.png" alt="">`}<span class="story-badge">${s.full_text?"學員心得":"影像紀錄"}</span></div><div class="story-body"><div class="story-meta">${esc(s.semester)} · ${esc(s.teacher||"")}</div><h3>${esc(s.title)}</h3><p>${esc(s.excerpt)}</p></div></article>`;
+    }).join("");
+    hs.querySelectorAll("[data-story]").forEach(el=>el.onclick=()=>openStory(el.dataset.story));
+  }
+}
+const mt=$("#menuToggle"); if(mt) mt.onclick=()=>$("#mainNav").classList.toggle("open");
+
+renderHome();
