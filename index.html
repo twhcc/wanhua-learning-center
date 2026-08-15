@@ -1,172 +1,177 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b7a4b">
-<meta name="color-scheme" content="light only">
-<title>萬華社區大學｜在地永續學習中心</title>
-<meta name="description" content="萬華社區大學在地永續學習中心：課程、教師人才、地方知識、出版成果與學習故事。">
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f2ea">
+  <meta name="description" content="臺北市萬華社區大學——在社區裡學習 也在學習裡重新認識社區">
+  <meta property="og:title" content="臺北市萬華社區大學">
+  <meta property="og:description" content="在社區裡學習 也在學習裡重新認識社區">
+  <meta property="og:image" content="https://wanhua-learning-center.whcc-course.workers.dev/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>臺北市萬華社區大學｜艋舺有情 學習同行</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="header-inner">
-    <button class="brand" data-page="home" aria-label="回首頁">
-      <img src="assets/brand/wanhua-logo.png" alt="臺北市萬華社區大學">
-      <span><strong>萬華社區大學</strong><small>在地永續學習中心</small></span>
-    </button>
-    <button class="menu-toggle" id="menuToggle" aria-label="開啟選單">☰</button>
-    <nav id="mainNav">
-      <button data-page="home" class="nav-btn active">首頁</button>
-      <button data-page="courses" class="nav-btn">課程探索</button>
-      <button data-page="teachers" class="nav-btn">教師人才庫</button>
-      <button data-page="stories" class="nav-btn">學習故事</button>
-      <button data-page="publications" class="nav-btn">萬華知識庫</button>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="回到首頁">
+      <img src="wanhua-logo.png" alt="萬華社區大學">
+      <span>WANHUA COMMUNITY COLLEGE<small>臺北市萬華社區大學</small></span>
+    </a>
+    <nav id="mainNav" aria-label="主要選單">
+      <a href="#fields">課程領域</a><a href="#faculty">社區師資</a><a href="#stories">學習故事</a><a href="#community">社區行動</a><a href="#explore">探索課程</a>
     </nav>
-  </div>
-</header>
+    <button class="menu" aria-controls="mainNav" aria-expanded="false">MENU <span>選單</span></button>
+  </header>
 
-<main>
-<section id="home" class="page active home-page">
-  <section class="hero">
-    <div class="hero-copy">
-      <div class="hero-kicker">WANHUA LIFELONG LEARNING</div>
-      <h1>學習萬華，<br><em>也讓萬華成為學習。</em></h1>
-      <p>從 194 門課程出發，把教師專業、地方知識、SDGs、終身學習素養與學員成果，整理成一張可以持續累積的學習地圖。</p>
-      <div class="hero-actions">
-        <button class="btn primary" data-page="courses">探索課程</button>
-        <button class="btn ghost" data-page="teachers">認識教師</button>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="label">WANHUA AS A CAMPUS｜以萬華為校園</p>
+        <h1>在社區裡學習<br><i>也在學習裡<br class="mobile-break">重新認識社區</i></h1>
+        <p class="lead">萬華是一座可以閱讀、探索、學習與參與的城市。社區大學在這裡串聯人、地方、知識與行動。</p>
       </div>
-      <div class="hero-meta">
-        <span>115 秋季</span><span>三大領域</span><span>四大學群</span><span>SDGs</span>
+      <figure class="hero-image">
+        <img src="story-14-photo-01.webp" alt="單車樂活小旅行的戶外學習紀錄">
+        <figcaption><span>FIELD NOTE 01</span>單車樂活小旅行——把路途變成教室</figcaption>
+      </figure>
+      <a class="scroll-cue" href="#city"><span>SCROLL TO EXPLORE｜向下探索</span>↓</a>
+    </section>
+
+    <section id="city" class="city-intro reveal">
+      <p class="label">A CITY TO READ｜閱讀一座城市</p>
+      <div>
+        <h2>我們不只在教室裡學習</h2>
+        <p>街區的紋理、居民的記憶、日常的技藝與共同面對的議題，都是課程的一部分。每一次走讀、創作、練習與對話，都讓我們重新看見生活所在的地方。</p>
       </div>
-    </div>
-    <div class="hero-visual">
-      <div class="logo-stage"><img src="assets/brand/wanhua-logo.png" alt=""></div>
-      <div class="voucher-chip chip-a"><b>萬華地方學</b><span>地方知識</span></div>
-      <div class="voucher-chip chip-b"><b>永續實踐</b><span>公共行動</span></div>
-      <div class="voucher-chip chip-c"><b>活躍老化</b><span>終身參與</span></div>
-    </div>
-  </section>
+      <aside>城市 → 人 → 學習 → 地方 → 行動 → 故事</aside>
+    </section>
 
-  <section class="quick-links">
-    <button data-page="courses"><span class="quick-icon">課</span><b>找課程</b><small>依領域、學群與 SDGs 探索</small></button>
-    <button data-page="teachers"><span class="quick-icon">師</span><b>找老師</b><small>從專長與課程認識教師</small></button>
-    <button data-page="stories"><span class="quick-icon">學</span><b>看學習</b><small>115-1 學員心得與照片</small></button>
-    <button data-page="publications"><span class="quick-icon">知</span><b>讀萬華</b><small>出版品與地方知識成果</small></button>
-  </section>
-
-  <section class="section-block">
-    <div class="section-heading">
-      <div><span class="eyebrow">LEARNING FRAMEWORK</span><h2>三大領域 × 四大學群</h2></div>
-      <p>領域是學習路徑，學群是每門課的主要公共實踐方向。</p>
-    </div>
-    <div class="framework">
-      <div class="domain-panel">
-        <article><span>01</span><h3>萬華地方學</h3><p>地方文化、歷史、人文、生態與地方認同。</p></article>
-        <article><span>02</span><h3>永續實踐</h3><p>永續生活、環境教育、循環思維與社區行動。</p></article>
-        <article><span>03</span><h3>活躍老化</h3><p>健康、高齡友善、共學與持續社會參與。</p></article>
+    <section id="fields" class="fields section-space">
+      <div class="sticky-title">
+        <p class="index">01</p><p class="label">LEARNING FIELDS｜學習領域</p>
+        <h2>從三個方向<br>進入城市學習</h2>
+        <p>不是課程分類，而是我們理解地方、回應生活的三種視角。</p>
       </div>
-      <div class="group-panel">
-        <article class="g-a"><b>A</b><h3>環境永續</h3><p>生態・食農・永續生活</p></article>
-        <article class="g-b"><b>B</b><h3>族群關懷</h3><p>健康・高齡・多元文化</p></article>
-        <article class="g-c"><b>C</b><h3>社區培力</h3><p>公民參與・志工・地方行動</p></article>
-        <article class="g-d"><b>D</b><h3>文化深耕</h3><p>文化資產・藝術・地方歷史</p></article>
+      <div class="field-list">
+        <button class="field field-local reveal" data-domain="萬華地方學">
+          <span class="field-en">LOCAL</span><span class="field-no">01</span>
+          <h3>萬華地方學</h3><p>從歷史、街區、文化與城市記憶出發，讀懂我們所在的地方。</p><b>探索相關課程 →</b>
+        </button>
+        <button class="field field-sustainable reveal" data-domain="永續實踐">
+          <span class="field-en">SUSTAINABLE</span><span class="field-no">02</span>
+          <h3>永續實踐</h3><p>把環境意識、公共關懷與生活選擇，變成可以參與的行動。</p><b>探索相關課程 →</b>
+        </button>
+        <button class="field field-active reveal" data-domain="活躍老化">
+          <span class="field-en">ACTIVE</span><span class="field-no">03</span>
+          <h3>活躍老化</h3><p>透過健康、創作與社會連結，持續拓展生命的可能。</p><b>探索相關課程 →</b>
+        </button>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="numbers">
-    <div><strong id="statCourses">194</strong><span>課程資料</span></div>
-    <div><strong id="statTeachers">—</strong><span>教師人才</span></div>
-    <div><strong id="statStories">23</strong><span>學習故事</span></div>
-    <div><strong>17</strong><span>SDGs 指標</span></div>
-  </section>
+    <section class="image-chapter reveal">
+      <figure><img src="story-06-photo-01.webp" alt="日本藍染課程成果展示"><figcaption>日本藍染文化與基礎技法｜學習留下的地方色彩</figcaption></figure>
+      <blockquote>知識不是被收藏起來<br>而是在分享與實作中繼續生長</blockquote>
+    </section>
 
-  <section class="section-block featured-teachers">
-    <div class="section-heading">
-      <div><span class="eyebrow">TEACHER TALENT</span><h2>從一位老師，找到一條學習路徑</h2></div>
-      <button class="text-link" data-page="teachers">查看全部教師 →</button>
-    </div>
-    <div id="featuredTeacherGrid" class="featured-grid"></div>
-  </section>
+    <section id="faculty" class="faculty section-space">
+      <header class="chapter-head reveal">
+        <div><p class="index">02</p><p class="label">COMMUNITY FACULTY｜社區師資</p></div>
+        <h2>專業走進社區<br>社區也回到課堂</h2>
+        <p>萬華社大的老師不只是授課者。透過培力與共作，他們逐步成為理解地方、回應公共議題、連結社群的社區型師資。</p>
+      </header>
+      <div id="teacherRail" class="teacher-rail"></div>
+      <button id="moreTeachers" class="rail-action" type="button" aria-controls="teacherRail">MEET MORE FACULTY｜認識更多社區師資 <span aria-hidden="true">→</span></button>
+    </section>
 
-  <section class="section-block soft">
-    <div class="section-heading">
-      <div><span class="eyebrow">LEARNING STORIES</span><h2>學習不只發生在教室裡</h2></div>
-      <button class="text-link" data-page="stories">閱讀更多 →</button>
-    </div>
-    <div id="homeStoryGrid" class="home-story-grid"></div>
-  </section>
+    <section class="learning-framework section-space">
+      <header class="chapter-head reveal">
+        <div><p class="index">03</p><p class="label">LEARNING FRAMEWORK｜學習架構</p></div>
+        <h2>讓學習連結個人<br>社會與永續</h2>
+        <p>領域、學群、終身學習素養與 SDGs 不是首頁上的行政說明，而是每一門課背後的學習座標。</p>
+      </header>
+      <div class="framework-editorial">
+        <button id="lifelongOpen" class="framework-piece reveal">
+          <img src="lifelong-learning.png" alt="終身學習素養架構圖">
+          <span><b>終身學習素養架構</b><small>自主行動、溝通互動、社會參與</small></span>
+        </button>
+        <button id="sdgsOpen" class="framework-piece reveal">
+          <img src="sdgs.png" alt="永續發展目標圖">
+          <span><b>SDGs 與我們的課程</b><small>讓地方學習回應全球永續目標</small></span>
+        </button>
+      </div>
+    </section>
 
-  <section class="knowledge-cta">
-    <div><span class="eyebrow">WANHUA KNOWLEDGE</span><h2>把一門課，累積成一座城市的知識。</h2><p>教師出版、地方研究、課程成果與學員故事，逐步形成萬華自己的終身學習知識庫。</p></div>
-    <button class="btn primary" data-page="publications">進入萬華知識庫</button>
-  </section>
-</section>
+    <section id="community" class="community section-space">
+      <header class="chapter-head reveal">
+        <div><p class="index">04</p><p class="label">COMMUNITY｜社區行動</p></div>
+        <h2>學習之後<br>我們一起做了什麼</h2>
+      </header>
+      <div class="community-grid">
+        <figure class="community-main reveal"><img src="story-20-photo-01.webp" alt="琺瑯與金工課程實作"><figcaption><span>MAKING｜共同製作</span><b>手作・美學・琺瑯與金工藝術</b><p>技藝在彼此觀看、示範與練習之間傳遞。</p></figcaption></figure>
+        <figure class="community-side reveal"><img src="story-23-photo-01.webp" alt="國畫課程學員聚會"><figcaption><span>TOGETHER｜共同生活</span><b>傳統國畫山水與創作</b><p>學習也創造新的關係與陪伴。</p></figcaption></figure>
+        <div class="community-note reveal"><p class="label">FROM CLASSROOM TO COMMUNITY｜從課堂走向社區</p><p>走讀、展演、工藝、健康實踐與地方研究，讓課程的影響不只停在一學期，而是回到日常生活與社區網絡。</p></div>
+      </div>
+    </section>
 
-<section id="courses" class="page">
-  <div class="page-title"><span class="eyebrow">COURSE EXPLORER</span><h1>課程探索</h1><p>從關鍵字、類別、領域與學群找到適合你的學習路徑。</p></div>
-  <div class="filter-bar">
-    <input id="courseSearch" placeholder="搜尋課程名稱、內容或教師…">
-    <select id="courseCategory"><option value="">全部類別</option><option>學術類</option><option>社團類</option><option>生活藝能類</option></select>
-    <select id="courseDomain"><option value="">全部領域</option><option>萬華地方學</option><option>永續實踐</option><option>活躍老化</option></select>
-    <select id="courseGroup"><option value="">全部學群</option><option>A環境永續</option><option>B族群關懷</option><option>C社區培力</option><option>D文化深耕</option></select>
-  </div>
-  <div class="result-line"><span id="courseCount"></span><button id="clearCourse">清除篩選</button></div>
-  <div id="courseGrid" class="card-grid"></div>
-</section>
+    <section id="stories" class="stories section-space">
+      <header class="chapter-head reveal">
+        <div><p class="index">05</p><p class="label">STORIES FROM THE CITY｜城市裡的學習故事</p></div>
+        <h2>每一段學習<br>都為城市留下新的註解</h2>
+        <p>真實的課程照片與匿名化學員心得，記錄改變如何在日常裡慢慢發生。</p>
+      </header>
+      <div id="storyList" class="story-list"></div>
+      <button id="moreStories" class="rail-action" type="button" aria-controls="storyList">READ MORE STORIES｜閱讀更多學習故事 <span aria-hidden="true">→</span></button>
+    </section>
 
-<section id="teachers" class="page">
-  <div class="page-title"><span class="eyebrow">LOCAL LEARNING TALENT</span><h1>教師人才庫</h1><p>從教師專長、授課與地方實踐認識萬華社大的學習人才。</p></div>
-  <div class="teacher-search">
-    <div><b>你想找什麼樣的老師？</b><small>姓名、專長、課程、領域都可以搜尋</small></div>
-    <input id="teacherSearch" placeholder="例如：文史、攝影、瑜珈、日語、金工…">
-  </div>
-  <div class="tag-filter" id="teacherTags"></div>
-  <div class="result-line"><span id="teacherCount"></span></div>
-  <div id="teacherGrid" class="card-grid"></div>
-</section>
+    <section id="explore" class="course-explorer section-space">
+      <header class="explore-head reveal">
+        <div><p class="index">06</p><p class="label">COURSE EXPLORER｜課程探索</p></div>
+        <h2 id="courseTitle">找到下一段學習旅程</h2>
+        <label for="courseSearch">SEARCH｜搜尋課程</label>
+        <input id="courseSearch" type="search" placeholder="輸入課名、教師或關鍵字">
+        <div class="filter-panel" aria-label="課程篩選">
+          <div class="filter-row" id="domainFilters">
+            <span>領域</span>
+            <button class="filter-chip is-active" type="button" data-filter-domain="" aria-pressed="true">全部</button>
+            <button class="filter-chip" type="button" data-filter-domain="萬華地方學" aria-pressed="false">萬華地方學</button>
+            <button class="filter-chip" type="button" data-filter-domain="永續實踐" aria-pressed="false">永續實踐</button>
+            <button class="filter-chip" type="button" data-filter-domain="活躍老化" aria-pressed="false">活躍老化</button>
+          </div>
+          <div class="filter-row" id="groupFilters">
+            <span>學群</span>
+            <button class="filter-chip is-active" type="button" data-filter-group="" aria-pressed="true">全部</button>
+            <button class="filter-chip" type="button" data-filter-group="A環境永續" aria-pressed="false">A 環境永續</button>
+            <button class="filter-chip" type="button" data-filter-group="B族群關懷" aria-pressed="false">B 族群關懷</button>
+            <button class="filter-chip" type="button" data-filter-group="C社區培力" aria-pressed="false">C 社區培力</button>
+            <button class="filter-chip" type="button" data-filter-group="D文化深耕" aria-pressed="false">D 文化深耕</button>
+          </div>
+          <div class="filter-status"><button id="clearFilters" type="button">清除篩選</button></div>
+        </div>
+      </header>
+      <div id="courseGrid" class="course-list"></div>
+      <button id="moreCourses" class="text-button">VIEW MORE COURSES｜瀏覽更多課程</button>
+    </section>
 
-<section id="teacherDetail" class="page"><button class="back" data-page="teachers">← 回教師人才庫</button><div id="teacherDetailContent"></div></section>
-<section id="courseDetail" class="page"><button class="back" data-page="courses">← 回課程探索</button><div id="courseDetailContent"></div></section>
+    <section id="knowledge" class="knowledge section-space">
+      <p class="label">WANHUA KNOWLEDGE｜萬華知識</p>
+      <h2>把地方的記憶<br>變成可以共享的知識</h2>
+      <div class="knowledge-links">
+        <a href="https://sites.google.com/twhcc.org.tw/whcc-books/%E9%A6%96%E9%A0%81?authuser=3" target="_blank" rel="noopener"><span>01</span><b>教師出版與地方研究</b><i>PUBLICATIONS｜出版品 ↗</i></a>
+        <button id="frameworkOpen"><span>02</span><b>理解完整學習架構</b><i>FRAMEWORK｜學習架構 ＋</i></button>
+        <a href="https://whcc.twcu.org.tw/course/m_index.php" target="_blank" rel="noopener"><span>03</span><b>前往萬華社大選課網</b><i>OFFICIAL SITE｜官方網站 ↗</i></a>
+      </div>
+    </section>
+  </main>
 
-<section id="stories" class="page">
-  <div class="page-title"><span class="eyebrow">LEARNING STORIES</span><h1>學員學習故事</h1><p>115-1 學員心得與課堂影像，讓學習留下可以被看見的記錄。</p></div>
-  <div class="filter-bar story-filter">
-    <input id="storySearch" placeholder="搜尋課程、老師、心得…">
-    <select id="storyType"><option value="">全部故事</option><option value="text">有文字心得</option><option value="photo">影像紀錄</option></select>
-  </div>
-  <div class="result-line"><span id="storyCount"></span><a href="115-1學員心得_課程辨識對照表.csv" download>下載辨識對照表</a></div>
-  <div id="storyGrid" class="story-grid"></div>
-</section>
+  <footer>
+    <div><img src="wanhua-logo.png" alt=""><p>臺北市萬華社區大學</p></div>
+        <p>在社區裡學習<br>也在學習裡重新認識社區</p>
+        <small>WANHUA COMMUNITY COLLEGE<br>艋舺有情 學習同行</small>
+  </footer>
 
-<section id="storyDetail" class="page"><button class="back" data-page="stories">← 回學習故事</button><div id="storyDetailContent"></div></section>
-
-<section id="publications" class="page">
-  <div class="page-title"><span class="eyebrow">WANHUA KNOWLEDGE</span><h1>萬華知識庫</h1><p>串接既有教師出版品網站，逐步整合地方研究、作品、教材與教學成果。</p></div>
-  <div class="knowledge-main">
-    <img src="assets/brand/wanhua-logo.png" alt="">
-    <div><h2>教師出版品與知識成果</h2><p>既有 Google Sites 保留為完整出版內容庫；本平台負責把「教師 ↔ 課程 ↔ 地方知識 ↔ 學員成果」串起來。</p></div>
-    <a id="publicationLink" class="btn primary" target="_blank" rel="noopener">前往出版品網站</a>
-  </div>
-  <div class="knowledge-cards">
-    <article><b>出版</b><h3>書籍與刊物</h3><p>教師專書、社大出版品、地方刊物。</p></article>
-    <article><b>研究</b><h3>地方知識</h3><p>文史、水文、文化資產與社區研究。</p></article>
-    <article><b>成果</b><h3>課程行動</h3><p>策展、公民週、跨課程共備與地方實踐。</p></article>
-  </div>
-</section>
-</main>
-
-<footer>
-  <div class="footer-inner">
-    <img src="assets/brand/wanhua-logo.png" alt="">
-    <div><strong>臺北市萬華社區大學｜在地永續學習中心</strong><span>課程 × 人才 × 地方知識 × 學習成果</span></div>
-    <div class="footer-links"><a href="https://whcc.twcu.org.tw/course/m_index.php" target="_blank">正式課務系統</a><a href="https://sites.google.com/twhcc.org.tw/whcc-books/%E9%A6%96%E9%A0%81?authuser=3" target="_blank">教師出版品</a></div>
-  </div>
-</footer>
-<script src="data.js"></script>
-<script src="app.js"></script>
+  <dialog id="modal"><button class="close" aria-label="關閉">×</button><div id="modalContent"></div></dialog>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

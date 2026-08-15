@@ -1,175 +1,267 @@
+const DATA = window.WANHUA_DATA;
+const $ = selector => document.querySelector(selector);
+const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const cleanTeacher = name => String(name || '').replace(/老師$|老$/,'');
+const teacherLabel = name => `${cleanTeacher(name)}老師`;
+const figureOrder = [3,7,1,6,4,0,5,2];
+const loopRailState = new WeakMap();
 
-function teacherPhoto(t, cls="avatar"){
-  if(t && t.photo_url) return `<div class="${cls}"><img src="${esc(t.photo_url)}" alt="${esc(t.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='${esc(initial(t.name))}'"></div>`;
-  return `<div class="${cls}">${esc(initial(t?.name||"萬"))}</div>`;
+function polishFacultyText(value){
+  return String(value || '')
+    .replace(/\r\n?/g,'\n')
+    .replace(/_{1,}|>{2,}/g,' ')
+    .replace(/[●•]+/g,' ')
+    .replace(/[﹝“]/g,'「')
+    .replace(/[﹞”]/g,'」')
+    .replace(/現任\s*[:：]/g,'現任：')
+    .replace(/經歷：\s*經歷：/g,'經歷：')
+    .replace(/[\t　]+/g,' ')
+    .replace(/\s+/g,' ')
+    .replace(/\s+([，。；：])/g,'$1')
+    .replace(/([，。；：])\1+/g,'$1')
+    .trim();
 }
-function verifiedLine(t){
-  return t && t.verified_note ? `<span class="verify">✓ 已對照公開課程資料</span>` : "";
+
+function facultyProfile(value){
+  const source = String(value || '')
+    .replace(/^\s*1\.\s*現職：/,'現職：')
+    .replace(/，\s*經歷：/,'\n經歷：')
+    .replace(/萬華社大講師\s*經歷：/,'萬華社大講師\n經歷：');
+  const marker = source.indexOf('\n經歷：');
+  const rawCurrent = marker >= 0 ? source.slice(0,marker).replace(/^現職：/,'') : '';
+  const experience = marker >= 0 ? source.slice(marker + 4) : source.replace(/^現職：/,'');
+  const otherCurrent = polishFacultyText(rawCurrent)
+    .replace(/(?:^|[｜、，；]\s*)萬華(?:社大|社區大學)講師/g,'')
+    .replace(/^[｜、，；\s]+|[｜、，；\s]+$/g,'');
+  return {
+    current: ['萬華社大講師',otherCurrent].filter(Boolean).join('｜'),
+    experience: polishFacultyText(experience).replace(/^經歷：\s*/,'')
+  };
 }
-function officialLink(t){
-  return t && t.official_url ? `<a class="official-link" href="${esc(t.official_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">查看萬華社大公開課程資料 →</a>` : "";
+
+function installInfiniteRail(container){
+  if (!container || loopRailState.has(container)) return;
+  const state = {ticking:false,setWidth:0};
+  loopRailState.set(container,state);
+  container.addEventListener('scroll',() => {
+    if (state.ticking || !state.setWidth) return;
+    state.ticking = true;
+    requestAnimationFrame(() => {
+      const left = container.scrollLeft;
+      if (left < state.setWidth * .5) container.scrollLeft = left + state.setWidth;
+      if (left > state.setWidth * 1.5) container.scrollLeft = left - state.setWidth;
+      state.ticking = false;
+    });
+  },{passive:true});
 }
 
-
-const D = window.WANHUA_DATA;
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-let teacherTag = "";
-
-function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
-function initial(name){return (name||"萬").trim().slice(0,1);}
-function chips(arr, cls=""){return (arr||[]).filter(Boolean).slice(0,8).map(x=>`<span class="chip ${cls}">${esc(x)}</span>`).join("");}
-
-function showPage(id){
-  $$(".page").forEach(p=>p.classList.remove("active"));
-  const el=$("#"+id); if(el) el.classList.add("active");
-  $$(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-  window.scrollTo({top:0,behavior:"smooth"});
+function renderInfiniteRail(container,items,template){
+  installInfiniteRail(container);
+  const copies = [0,1,2].flatMap(copy => items.map((item,index) => ({item,index,copy})));
+  container.innerHTML = copies.map(({item,index,copy}) => template(item,index,copy)).join('');
+  requestAnimationFrame(() => {
+    const state = loopRailState.get(container);
+    state.setWidth = container.scrollWidth / 3;
+    container.scrollLeft = state.setWidth;
+  });
 }
-document.addEventListener("click",e=>{const btn=e.target.closest("[data-page]");if(btn)showPage(btn.dataset.page);});
 
-$("#statCourses").textContent=D.stats.courses;
-$("#statTeachers").textContent=D.stats.teachers;
-$("#statStories").textContent=D.stats.stories || D.stories.length;
+function slideRail(container){
+  if (!container) return;
+  const card = container.querySelector(':scope > article');
+  const styles = getComputedStyle(container);
+  const gap = parseFloat(styles.columnGap || styles.gap) || 0;
+  const distance = card ? card.getBoundingClientRect().width + gap : container.clientWidth * .82;
+  container.scrollBy({left:distance,behavior:'smooth'});
+}
 
-// Courses
+let activeDomain = '';
+let activeGroup = '';
+let courseLimit = 9;
+
+function showModal(content){
+  $('#modalContent').innerHTML = `<div class="modal-body">${content}</div>`;
+  $('#modal').showModal();
+}
+
+function syncFilterButtons(){
+  document.querySelectorAll('[data-filter-domain]').forEach(button => {
+    const active = button.dataset.filterDomain === activeDomain;
+    button.classList.toggle('is-active',active);
+    button.setAttribute('aria-pressed',String(active));
+  });
+  document.querySelectorAll('[data-filter-group]').forEach(button => {
+    const active = button.dataset.filterGroup === activeGroup;
+    button.classList.toggle('is-active',active);
+    button.setAttribute('aria-pressed',String(active));
+  });
+}
+
 function renderCourses(){
-  const q=$("#courseSearch").value.trim().toLowerCase();
-  const cat=$("#courseCategory").value, dom=$("#courseDomain").value, grp=$("#courseGroup").value;
-  const list=D.courses.filter(c=>{
-    const text=(c.name+" "+c.description+" "+c.teacher).toLowerCase();
-    return (!q||text.includes(q)) && (!cat||c.category===cat) && (!dom||c.domains.includes(dom)) && (!grp||c.group===grp);
+  const query = $('#courseSearch').value.trim().toLowerCase();
+  const courses = DATA.courses.filter(course => {
+    const domainMatch = !activeDomain || course.domains.includes(activeDomain);
+    const groupMatch = !activeGroup || course.group === activeGroup;
+    const searchable = [course.name,course.teacher,course.description,course.category,course.subcategory,course.group,...course.domains].join(' ').toLowerCase();
+    return domainMatch && groupMatch && (!query || searchable.includes(query));
   });
-  $("#courseCount").textContent=`找到 ${list.length} 門課程`;
-  $("#courseGrid").innerHTML=list.map(c=>`
-    <article class="course-card" data-course="${esc(c.id)}">
-      <div class="mini">${esc(c.category)} · ${esc(c.subcategory)} · ${esc(c.id)}</div>
-      <h3>${esc(c.name)}</h3><div class="mini">授課教師｜${esc(c.teacher)}</div>
-      <div class="chips">${chips(c.domains)}${chips([c.group],"gold")}${chips(c.sdgs.slice(0,4),"dark")}</div>
-    </article>`).join("") || `<div class="course-card"><h3>沒有符合的課程</h3><p>請調整搜尋或篩選條件。</p></div>`;
+  $('#courseTitle').textContent = '找到下一段學習旅程';
+  $('#clearFilters').hidden = !activeDomain && !activeGroup && !query;
+  syncFilterButtons();
+  $('#courseGrid').innerHTML = courses.slice(0,courseLimit).map(course => `
+    <article class="course-card" data-course="${escapeHTML(course.id)}" tabindex="0">
+      <small>${escapeHTML(course.domains.join(' · '))}</small>
+      <h4>${escapeHTML(course.name)}</h4>
+      <p>${escapeHTML(cleanTeacher(course.teacher))}</p>
+      <span>${escapeHTML(course.group)}　→</span>
+    </article>`).join('') || '<p class="empty-state">目前沒有符合條件的課程　請調整篩選或搜尋文字</p>';
+  $('#moreCourses').hidden = courses.length <= courseLimit;
 }
-["courseSearch","courseCategory","courseDomain","courseGroup"].forEach(id=>$("#"+id).addEventListener("input",renderCourses));
-$("#clearCourse").onclick=()=>{$("#courseSearch").value="";$("#courseCategory").value="";$("#courseDomain").value="";$("#courseGroup").value="";renderCourses();};
-$("#courseGrid").addEventListener("click",e=>{const c=e.target.closest("[data-course]");if(c)openCourse(c.dataset.course);});
 
-// Teachers
-function renderTeacherTags(){
-  const tags=[...new Set(D.teachers.flatMap(t=>t.specialties))].filter(Boolean).slice(0,28);
-  $("#teacherTags").innerHTML=`<button class="${teacherTag===""?"active":""}" data-tag="">全部</button>`+
-    tags.map(t=>`<button class="${teacherTag===t?"active":""}" data-tag="${esc(t)}">${esc(t)}</button>`).join("");
-}
 function renderTeachers(){
-  const q=$("#teacherSearch").value.trim().toLowerCase();
-  const list=D.teachers.filter(t=>{
-    const text=(t.name+" "+t.bio+" "+t.courses.join(" ")+" "+t.specialties.join(" ")+" "+t.domains.join(" ")).toLowerCase();
-    return (!q||text.includes(q)) && (!teacherTag||t.specialties.includes(teacherTag));
+  renderInfiniteRail($('#teacherRail'),DATA.teachers,(teacher,index,copy) => {
+    const figure = figureOrder[index % figureOrder.length] + 1;
+    const visibleName = teacher.name === '孫家偉' ? '孫家偉老師' : teacher.name;
+    return `<article class="teacher-card" data-teacher="${escapeHTML(teacher.id)}" tabindex="${copy === 1 ? '0' : '-1'}"${copy === 1 ? '' : ' aria-hidden="true"'}>
+      <div class="portrait"><img loading="lazy" src="figure-${String(figure).padStart(2,'0')}.png" alt="社區師資公仔 ${figure}"></div>
+      <h3>${escapeHTML(visibleName)}</h3>
+      <p>${escapeHTML(teacher.verified_specialty || teacher.specialties.slice(0,2).join('・'))}</p>
+      <small>VIEW PROFILE｜查看教師資料 →</small>
+    </article>`;
   });
-  $("#teacherCount").textContent=`找到 ${list.length} 位教師`;
-  $("#teacherGrid").innerHTML=list.map(t=>`
-    <article class="teacher-card" data-teacher="${esc(t.id)}">
-      <div class="teacher-top">${teacherPhoto(t)}<div><div class="mini">萬華社區大學教師</div><h3>${esc(t.name)}</h3></div></div>
-      <p class="specialty">${esc((t.verified_specialty||t.specialties.slice(0,3).join("｜")||"專長資料待補"))}</p>${verifiedLine(t)}
-      <div class="chips">${chips(t.domains)}${chips(t.groups.slice(0,2),"gold")}</div>
-      <div class="mini" style="margin-top:14px">授課 ${t.courses.length} 門 · 查看完整人物誌 →</div>
-    </article>`).join("");
 }
-$("#teacherSearch").addEventListener("input",renderTeachers);
-$("#teacherTags").addEventListener("click",e=>{const b=e.target.closest("[data-tag]");if(b){teacherTag=b.dataset.tag;renderTeacherTags();renderTeachers();}});
-$("#teacherGrid").addEventListener("click",e=>{const t=e.target.closest("[data-teacher]");if(t)openTeacher(t.dataset.teacher);});
+
+function renderStories(){
+  renderInfiniteRail($('#storyList'),DATA.stories,(story,index,copy) => `
+    <article class="story-card" data-story="${escapeHTML(story.id)}" tabindex="${copy === 1 ? '0' : '-1'}"${copy === 1 ? '' : ' aria-hidden="true"'}>
+      <div class="story-image"><img loading="lazy" src="${escapeHTML(story.images[0])}" alt="${escapeHTML(story.course)}學習紀錄"></div>
+      <div class="story-copy">
+        <small>LEARNING STORY｜學習故事 · ${escapeHTML(story.semester)}</small>
+        <h3>${escapeHTML(story.course)}</h3>
+        <p>${escapeHTML((story.excerpt || '以影像記錄課堂裡的學習與相遇').slice(0,120))}${story.excerpt && story.excerpt.length > 120 ? '…' : ''}</p>
+        <em>${escapeHTML(teacherLabel(story.teacher))}</em>
+        <b>${escapeHTML(story.student || '匿名學員')}　READ｜閱讀 →</b>
+      </div>
+    </article>`);
+}
+
+function openCourse(id){
+  const course = DATA.courses.find(item => item.id === id);
+  if (!course) return;
+  showModal(`<span class="eyebrow">${escapeHTML(course.domains.join(' · '))}</span>
+    <h2>${escapeHTML(course.name)}</h2><h3>${escapeHTML(teacherLabel(course.teacher))}</h3>
+    <p>${escapeHTML(course.description)}</p>
+    <div>${[course.group,...course.sdgs].map(item => `<span class="pill">${escapeHTML(item)}</span>`).join('')}</div>
+    ${course.official_url ? `<p><a class="text-button" target="_blank" rel="noopener" href="${escapeHTML(course.official_url)}">前往官方課程頁 ↗</a></p>` : ''}`);
+}
 
 function openTeacher(id){
-  const t=D.teachers.find(x=>x.id===id); if(!t)return;
-  const related=D.courses.filter(c=>t.courses.includes(c.name));
-  const teacherStories=(D.stories||[]).filter(s=>s.teacher===t.name || t.courses.includes(s.course));
-  $("#teacherDetailContent").innerHTML=`
-    <div class="detail-hero">${teacherPhoto(t)}
-      <div><div class="eyebrow">LOCAL LEARNING TALENT</div><h2>${esc(t.name)}</h2><p>${esc(t.bio)}</p><div class="detail-tags">${chips(t.specialties)}${chips(t.domains)}${chips(t.groups,"gold")}</div>${officialLink(t)}</div></div>
+  const teacher = DATA.teachers.find(item => item.id === id);
+  if (!teacher) return;
+  const visibleName = teacher.name === '孫家偉' ? '孫家偉老師' : teacher.name;
+  const profile = facultyProfile(teacher.bio);
+  showModal(`<span class="eyebrow">COMMUNITY FACULTY｜社區師資</span>
+    <h2>${escapeHTML(visibleName)}</h2><h3>${escapeHTML(teacher.verified_specialty || teacher.specialties.join('・'))}</h3>
+    <h3>師資簡介</h3>
+    <div class="faculty-profile">
+      <p><b>現職：</b><span>${escapeHTML(profile.current)}</span></p>
+      <p><b>經歷：</b><span>${escapeHTML(profile.experience)}</span></p>
     </div>
-    <div class="detail-section"><h3>📚 在萬華社大授課</h3><div class="course-list">${related.map(c=>`<div class="course-link" data-course="${esc(c.id)}"><b>${esc(c.name)}</b><div class="mini">${esc(c.category)} · ${esc(c.group)}</div></div>`).join("")}</div></div>
-    ${teacherStories.length?`<div class="detail-section"><h3>💬 115-1 學員故事</h3><div class="course-list">${teacherStories.map(s=>`<div class="course-link" data-story="${esc(s.id)}"><b>${esc(s.title)}</b><div class="mini">${s.images.length} 張照片</div></div>`).join("")}</div></div>`:""}
-    <div class="detail-section"><h3>📖 出版品與作品</h3><p>出版品採既有 Google Sites 為正式內容庫；之後可在每位教師頁自動帶入對應出版品。</p><button class="primary" data-page="publications">前往教師出版品專區 →</button></div>`;
-  showPage("teacherDetail");
-  $("#teacherDetailContent").querySelectorAll("[data-course]").forEach(el=>el.onclick=()=>openCourse(el.dataset.course));
-  $("#teacherDetailContent").querySelectorAll("[data-story]").forEach(el=>el.onclick=()=>openStory(el.dataset.story));
+    <h3>開設課程</h3><p>${teacher.courses.map(escapeHTML).join('<br>')}</p>
+    <div>${[...teacher.domains,...teacher.groups,...teacher.sdgs].map(item => `<span class="pill">${escapeHTML(item)}</span>`).join('')}</div>
+    ${teacher.official_url ? `<p><a class="text-button" target="_blank" rel="noopener" href="${escapeHTML(teacher.official_url)}">查看官方資料 ↗</a></p>` : ''}`);
 }
-function openCourse(id){
-  const c=D.courses.find(x=>x.id===id); if(!c)return;
-  const relatedStories=(D.stories||[]).filter(s=>s.course===c.name);
-  $("#courseDetailContent").innerHTML=`
-    <div class="detail-hero"><div class="avatar">${esc(c.category.slice(0,1))}</div>
-      <div><div class="eyebrow">${esc(c.category)} · ${esc(c.subcategory)}</div><h2>${esc(c.name)}</h2><p>${esc(c.description||"課程介紹待補。")}</p><div class="detail-tags">${chips(c.domains)}${chips([c.group],"gold")}${chips(c.sdgs,"dark")}</div></div>
-    </div>
-    <div class="detail-section"><h3>👩‍🏫 授課教師</h3><div class="course-link" id="courseTeacherLink"><b>${esc(c.teacher)}</b><div class="mini">查看教師人物誌 →</div></div></div>
-    ${relatedStories.length?`<div class="detail-section"><h3>💬 115-1 學習故事</h3>${relatedStories.map(s=>`<div class="course-link" data-story="${esc(s.id)}"><b>${esc(s.title)}</b><div class="mini">${s.images.length} 張照片 · 閱讀故事 →</div></div>`).join("")}</div>`:""}
-    <div class="detail-section"><h3>🧭 課程定位</h3><p>包含領域：${esc(c.domains.join("、")||"待補")}｜所屬學群：${esc(c.group)}</p><p>SDGs：${esc(c.sdgs.join("、"))}</p></div>`;
-  showPage("courseDetail");
-  $("#courseTeacherLink").onclick=()=>{const t=D.teachers.find(x=>x.name===c.teacher);if(t)openTeacher(t.id);};
-  $("#courseDetailContent").querySelectorAll("[data-story]").forEach(el=>el.onclick=()=>openStory(el.dataset.story));
-}
-
-// Stories
-function renderStories(){
-  const q=$("#storySearch").value.trim().toLowerCase();
-  const typ=$("#storyType").value;
-  const list=D.stories.filter(s=>{
-    const text=(s.course+" "+s.teacher+" "+s.title+" "+s.excerpt+" "+s.full_text).toLowerCase();
-    const typeOK=!typ || (typ==="text" && !!s.full_text) || (typ==="photo" && !s.full_text);
-    return (!q||text.includes(q)) && typeOK;
-  });
-  $("#storyCount").textContent=`115-1 共整理 ${list.length} 組學習故事／課堂紀錄`;
-  $("#storyGrid").innerHTML=list.map(s=>{
-    const cover=s.images[0];
-    return `<article class="story-card" data-story="${esc(s.id)}">
-      <div class="story-cover ${cover?"":"no-photo"}">${cover?`<img loading="lazy" src="${esc(cover)}" alt="${esc(s.course)}">`:`<img src="assets/brand/wanhua-logo.png" alt="">`}<span class="story-badge">${s.full_text?"學員心得":"影像紀錄"}</span></div>
-      <div class="story-body"><div class="story-meta">${esc(s.semester)} · ${esc(s.teacher||"教師資料待補")}</div><h3>${esc(s.title)}</h3><p>${esc(s.excerpt)}</p><div class="story-media-count">📷 ${s.images.length} 張照片${s.video_count?` · 🎬 原始資料含 ${s.video_count} 支影片`:""} · 查看完整內容 →</div></div>
-    </article>`;
-  }).join("");
-}
-$("#storySearch").addEventListener("input",renderStories);
-$("#storyType").addEventListener("input",renderStories);
-$("#storyGrid").addEventListener("click",e=>{const x=e.target.closest("[data-story]");if(x)openStory(x.dataset.story);});
 
 function openStory(id){
-  const s=D.stories.find(x=>x.id===id); if(!s)return;
-  const cover=s.images[0];
-  const course=D.courses.find(c=>c.name===s.course);
-  $("#storyDetailContent").innerHTML=`
-    <div class="story-detail-head">
-      <div><div class="eyebrow">${esc(s.semester)} · LEARNING STORY</div><h2>${esc(s.title)}</h2><p class="story-meta">課程｜${esc(s.course)}${s.teacher?`　教師｜${esc(s.teacher)}`:""}</p><div class="chips">${chips(s.domains)}${chips([s.group],"gold")}${chips(s.sdgs.slice(0,5),"dark")}</div><p style="color:#65766d;margin-top:20px">原始資料夾：${esc(s.source_folder)}<br>本頁課名已依心得文字、教師資料與資料夾關鍵字交叉辨識。</p>${course?`<button class="secondary" data-course="${esc(course.id)}">查看 115-2 對應課程 →</button>`:""}</div>
-      <div class="cover ${cover?"":"logo"}">${cover?`<img src="${esc(cover)}" alt="${esc(s.course)}">`:`<img src="assets/brand/wanhua-logo.png" alt="">`}</div>
-    </div>
-    <div class="detail-section"><h3>💬 學員心得</h3>${s.full_text?`<div class="story-text">${esc(s.full_text)}</div>`:`<p>此資料夾未附文字心得，目前以課堂照片作為學習成果紀錄。</p>`}</div>
-    <div class="detail-section"><h3>📷 課堂照片 <span class="mini">${s.images.length} 張</span></h3>
-      ${s.images.length?`<div class="photo-gallery">${s.images.map((img,i)=>`<a href="${esc(img)}" target="_blank" title="開啟照片 ${i+1}"><img loading="lazy" src="${esc(img)}" alt="${esc(s.course)}照片 ${i+1}"></a>`).join("")}</div>`:`<p>此筆資料沒有照片。</p>`}
-      ${s.video_count?`<div class="video-note">原始 ZIP 另含 ${s.video_count} 支影片。為了讓免費網站版本維持較小容量，本 Demo 未打包大型影片；正式上線可改用 Google Drive／YouTube 嵌入。</div>`:""}
-    </div>`;
-  showPage("storyDetail");
-  $("#storyDetailContent").querySelectorAll("[data-course]").forEach(el=>el.onclick=()=>openCourse(el.dataset.course));
+  const story = DATA.stories.find(item => item.id === id);
+  if (!story) return;
+  const paragraphs = String(story.full_text || story.excerpt || '本則以影像記錄學習現場')
+    .split(/\n{2,}/)
+    .filter(Boolean)
+    .map(text => `<p>${escapeHTML(text)}</p>`)
+    .join('');
+  showModal(`<span class="eyebrow">${escapeHTML(story.semester)} · LEARNING STORY｜學習故事</span>
+    <h2>${escapeHTML(story.course)}</h2><h3>${escapeHTML(story.student || '匿名學員')}｜${escapeHTML(teacherLabel(story.teacher))}</h3>
+    <img class="modal-image" src="${escapeHTML(story.images[0])}" alt="${escapeHTML(story.course)}學習紀錄">
+    <div class="story-full-text">${paragraphs}</div>`);
 }
 
-$("#publicationLink").href=D.site.publication_url;
-renderCourses();renderTeacherTags();renderTeachers();renderStories();
+function openFramework(){
+  showModal(`<span class="eyebrow">ABOUT LEARNING｜學習架構</span><h2>三大領域連結終身學習與永續行動</h2>
+    <div class="framework-visual"><article><b>LOCAL｜地方</b><h3>萬華地方學</h3><p>從地方歷史、文化、產業與街區出發。</p></article><article><b>SUSTAINABLE｜永續</b><h3>永續實踐</h3><p>讓環境意識成為日常生活的行動。</p></article><article><b>ACTIVE｜活躍</b><h3>活躍老化</h3><p>以健康、創作與參與支持終身學習。</p></article></div>
+    <h3>四大學群</h3><p>A 環境永續　B 族群關懷　C 社區培力　D 文化深耕</p>
+    <img class="framework-image" src="lifelong-learning.png" alt="終身學習素養架構圖">
+    <img class="framework-image" src="sdgs.png" alt="永續發展目標圖">`);
+}
 
-
-function renderHome(){
-  const featureNames=["李欣融","陳建志","吳讚軒","林淑媛","陳金泉"];
-  const featured=featureNames.map(n=>D.teachers.find(t=>t.name===n)).filter(Boolean).slice(0,5);
-  const f=$("#featuredTeacherGrid");
-  if(f) f.innerHTML=featured.map(t=>`
-    <article class="featured-teacher" data-teacher="${esc(t.id)}">
-      <div class="teacher-media">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="${esc(t.name)}" loading="lazy" referrerpolicy="no-referrer">`:`<div class="teacher-initial">${esc(initial(t.name))}</div>`}</div>
-      <div class="teacher-copy"><div class="mini">${esc(t.domains.slice(0,2).join("・")||"萬華社大教師")}</div><h3>${esc(t.name)}</h3><p>${esc(t.verified_specialty||t.specialties.slice(0,2).join("｜")||"教師專業資料")}</p>${verifiedLine(t)}</div>
-    </article>`).join("");
-  if(f) f.querySelectorAll("[data-teacher]").forEach(el=>el.onclick=()=>openTeacher(el.dataset.teacher));
-  const hs=$("#homeStoryGrid");
-  if(hs){
-    hs.innerHTML=(D.stories||[]).slice(0,3).map(s=>{
-      const cover=s.images&&s.images[0];
-      return `<article class="story-card" data-story="${esc(s.id)}"><div class="story-cover ${cover?"":"no-photo"}">${cover?`<img src="${esc(cover)}" alt="${esc(s.course)}">`:`<img src="assets/brand/wanhua-logo.png" alt="">`}<span class="story-badge">${s.full_text?"學員心得":"影像紀錄"}</span></div><div class="story-body"><div class="story-meta">${esc(s.semester)} · ${esc(s.teacher||"")}</div><h3>${esc(s.title)}</h3><p>${esc(s.excerpt)}</p></div></article>`;
-    }).join("");
-    hs.querySelectorAll("[data-story]").forEach(el=>el.onclick=()=>openStory(el.dataset.story));
+document.addEventListener('click', event => {
+  const domainFilter = event.target.closest('[data-filter-domain]');
+  if (domainFilter){
+    activeDomain = domainFilter.dataset.filterDomain;
+    courseLimit = 9;
+    renderCourses();
+    return;
   }
-}
-const mt=$("#menuToggle"); if(mt) mt.onclick=()=>$("#mainNav").classList.toggle("open");
+  const groupFilter = event.target.closest('[data-filter-group]');
+  if (groupFilter){
+    activeGroup = groupFilter.dataset.filterGroup;
+    courseLimit = 9;
+    renderCourses();
+    return;
+  }
+  const field = event.target.closest('.field');
+  if (field){
+    activeDomain = field.dataset.domain;
+    activeGroup = '';
+    courseLimit = 9;
+    renderCourses();
+    $('#explore').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  const course = event.target.closest('.course-card');
+  if (course) return openCourse(course.dataset.course);
+  const teacher = event.target.closest('.teacher-card');
+  if (teacher) return openTeacher(teacher.dataset.teacher);
+  const story = event.target.closest('.story-card');
+  if (story) return openStory(story.dataset.story);
+  if (event.target.closest('.close')) $('#modal').close();
+  if (event.target.id === 'moreCourses'){ courseLimit += 9; renderCourses(); }
+  if (event.target.closest('#moreTeachers')) slideRail($('#teacherRail'));
+  if (event.target.closest('#moreStories')) slideRail($('#storyList'));
+  if (event.target.id === 'clearFilters'){
+    activeDomain = '';
+    activeGroup = '';
+    courseLimit = 9;
+    $('#courseSearch').value = '';
+    renderCourses();
+  }
+  if (event.target.closest('#frameworkOpen')) openFramework();
+  if (event.target.closest('#lifelongOpen')) showModal(`<span class="eyebrow">LIFELONG LEARNING｜終身學習</span><h2>終身學習素養架構</h2><img class="framework-image" src="lifelong-learning.png" alt="終身學習素養架構圖"><p>以終身學習者為核心，連結自主行動、溝通互動與社會參與。</p>`);
+  if (event.target.closest('#sdgsOpen')) showModal(`<span class="eyebrow">SUSTAINABLE DEVELOPMENT GOALS｜永續發展目標</span><h2>SDGs 與我們的課程</h2><img class="framework-image" src="sdgs.png" alt="永續發展目標圖"><p>讓地方課程連結全球永續行動。</p>`);
+  const menu = event.target.closest('.menu');
+  if (menu){
+    $('.site-header').classList.toggle('open');
+    menu.setAttribute('aria-expanded',$('.site-header').classList.contains('open'));
+  }
+});
 
-renderHome();
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  const target = event.target;
+  if (target.matches('.course-card')) openCourse(target.dataset.course);
+  if (target.matches('.teacher-card')) openTeacher(target.dataset.teacher);
+  if (target.matches('.story-card')) openStory(target.dataset.story);
+});
+
+$('#courseSearch').addEventListener('input',() => { courseLimit = 9; renderCourses(); });
+$('#modal').addEventListener('click',event => { if (event.target === $('#modal')) $('#modal').close(); });
+document.querySelectorAll('#mainNav a').forEach(link => link.addEventListener('click',() => $('.site-header').classList.remove('open')));
+
+const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+  if (entry.isIntersecting) entry.target.classList.add('visible');
+}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(item => observer.observe(item));
+
+renderCourses();
+renderTeachers();
+renderStories();
