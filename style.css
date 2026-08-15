@@ -107,21 +107,39 @@ dialog{width:min(980px,94vw);max-height:90vh;border:0;padding:0;background:#f7f5
   .filter-chip{padding:9px 2px;margin-right:11px}
 }
 
-/* Version 3: moving images, verified teaching photos and civic-week archive */
+/* Version 3: documentary images, verified teaching photos and learning actions */
 .brand-film{position:relative;min-height:82vh;background:#17241e;color:#f7f4ea;overflow:hidden}
 .brand-film:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,34,28,.87) 0%,rgba(22,34,28,.5) 46%,rgba(22,34,28,.08) 77%)}
-.brand-film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.8}
+.brand-film-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.8}
 .brand-film-copy{position:relative;z-index:1;min-height:82vh;width:min(680px,70vw);padding:17vh 8vw;display:flex;flex-direction:column;justify-content:center}
 .brand-film-copy h2{font-family:var(--title);font-size:clamp(48px,6vw,90px);line-height:1.35;font-weight:500;margin:35px 0}
 .brand-film-copy>p:not(.label){font-family:var(--title);font-size:20px;line-height:2;max-width:610px}
-.brand-film-copy button{align-self:flex-start;margin-top:35px;padding:10px 0;border:0;border-bottom:1px solid rgba(255,255,255,.65);background:transparent;color:inherit;font-size:11px;letter-spacing:.1em;cursor:pointer}
 .portrait-real img{object-fit:cover;padding:0;filter:saturate(.82) contrast(.98)}
 .teacher-card:hover .portrait-real img{filter:saturate(1)}
+.photo-journal{background:#f4f2ea}
+.photo-journal .chapter-head{margin-bottom:85px}
+.photo-journal-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:32px 28px;align-items:start}
+.photo-scene{margin:0}
+.photo-scene img{width:100%;height:100%;display:block;object-fit:cover;filter:saturate(.86) contrast(.98);transition:filter .35s ease,transform .55s ease}
+.photo-scene:hover img{filter:saturate(1) contrast(1);transform:scale(1.012)}
+.photo-scene figcaption{font-family:var(--title);font-size:18px;line-height:1.65;margin-top:17px;padding-top:13px;border-top:1px solid var(--line)}
+.photo-scene figcaption small{display:block;font-family:var(--sans);font-size:9px;letter-spacing:.13em;margin-bottom:5px}
+.photo-scene-wide{grid-column:1/8}
+.photo-scene-wide img{aspect-ratio:16/9}
+.photo-scene-craft{grid-column:9/13;margin-top:110px}
+.photo-scene-craft img{aspect-ratio:4/5}
+.photo-scene-stage{grid-column:1/5;margin-top:80px}
+.photo-scene-stage img{aspect-ratio:4/3}
+.photo-scene-community{grid-column:5/10;margin-top:20px}
+.photo-scene-community img{aspect-ratio:4/3}
+.photo-scene-local{grid-column:10/13;margin-top:125px}
+.photo-scene-local img{aspect-ratio:3/4}
 .moving-stories{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:6vw;align-items:start;margin-top:145px;padding-top:110px;border-top:1px solid var(--line)}
 .moving-story-short{margin-top:180px}
-.moving-story video{width:100%;background:#263a31;display:block;object-fit:cover}
-.moving-story-main video{aspect-ratio:16/9}
-.moving-story-short video{aspect-ratio:4/3}
+.moving-story figure{margin:0;overflow:hidden;background:#263a31}
+.moving-story figure img{width:100%;display:block;object-fit:cover}
+.moving-story-main figure img{aspect-ratio:16/9}
+.moving-story-short figure img{aspect-ratio:4/3}
 .moving-story .label{margin:22px 0 0}
 .moving-story h3{font-family:var(--title);font-size:clamp(29px,3.2vw,49px);line-height:1.5;font-weight:500;margin:16px 0}
 .moving-story-short h3{font-size:clamp(27px,2.5vw,39px)}
@@ -152,6 +170,12 @@ dialog{width:min(980px,94vw);max-height:90vh;border:0;padding:0;background:#f7f5
   .brand-film-copy{width:100%;padding:13vh 7vw 10vh;justify-content:flex-end}
   .brand-film-copy h2{font-size:43px;margin:25px 0}
   .brand-film-copy>p:not(.label){font-size:16px;line-height:1.9}
+  .photo-journal .chapter-head{margin-bottom:55px}
+  .photo-journal-grid{display:flex;overflow-x:auto;gap:18px;margin-right:-7vw;padding-right:7vw;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .photo-journal-grid::-webkit-scrollbar{display:none}
+  .photo-scene,.photo-scene-wide,.photo-scene-craft,.photo-scene-stage,.photo-scene-community,.photo-scene-local{flex:0 0 82vw;margin-top:0;scroll-snap-align:start}
+  .photo-scene img,.photo-scene-wide img,.photo-scene-craft img,.photo-scene-stage img,.photo-scene-community img,.photo-scene-local img{aspect-ratio:4/3;height:auto}
+  .photo-scene figcaption{font-size:16px}
   .moving-stories{display:block;margin-top:95px;padding-top:75px}
   .moving-story-short{margin-top:75px}
   .moving-story h3,.moving-story-short h3{font-size:31px}
@@ -166,4 +190,4 @@ dialog{width:min(980px,94vw);max-height:90vh;border:0;padding:0;background:#f7f5
   .course-live-link a{margin-top:12px;width:max-content}
 }
 
-@media(prefers-reduced-motion:reduce){.brand-film video{display:none}.brand-film{background:url('wanhua-brand-film-poster.jpg') center/cover no-repeat}.civic-card img{transition:none}}
+@media(prefers-reduced-motion:reduce){.civic-card img{transition:none}}

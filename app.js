@@ -5,10 +5,10 @@ const TEACHER_PHOTOS = {
   '呂江銘':{src:'teacher-lu-jiangming.webp',position:'50% 34%'},
   '李欣融':{src:'teacher-li-xinrong.webp',position:'50% 32%'}
 };
-const CIVIC_WEEKS = [
+const LEARNING_ACTIONS = [
   {
-    id:'1142',semester:'114-2',date:'2025.10.27–10.31',count:'16 場免費講座與走讀',title:'萬華文化深耕',
-    intro:'從萬華土地出發　走進街巷　傾聽故事　在歷史　地域與當代生活之間重新理解地方的文化脈動',
+    id:'1142',semester:'114-2',date:'2025.10.27–10.31',count:'16 場地方講座與走讀',title:'萬華文化深耕',
+    intro:'從萬華土地出發　由教師共同策劃走讀與議題學習　帶領學員在歷史　地域與當代生活之間建立地方理解　培養觀察　對話與公共參與的能力',
     link:'https://www.beclass.com/rid=305018068e624796d1c9',
     stories:[
       {image:'civic-1142-market.webp',title:'空的市場　滿的故事',meta:'艋舺市場空間走讀｜陳乃嘉老師',text:'從市場格局　巷弄尺度與攤商生活出發　理解空間如何承接地方日常與城市變遷'},
@@ -17,8 +17,8 @@ const CIVIC_WEEKS = [
     ]
   },
   {
-    id:'1151',semester:'115-1',date:'2026.04.27–05.04',count:'17 場深度走讀與專業講座',title:'巷弄裡的永續方舟',
-    intro:'以環境永續與地方學為核心　從老街　市場　水岸　高齡議題到 AI 科技　尋找城市共榮的生活解答',
+    id:'1151',semester:'115-1',date:'2026.04.27–05.04',count:'17 場素養講座與共學行動',title:'巷弄裡的永續方舟',
+    intro:'以環境永續與地方學為核心　教師透過跨域共備　現場帶領與教學轉化　陪伴學員從老街　市場　水岸　高齡議題到 AI 科技　尋找城市共榮的生活解答',
     link:'https://www.beclass.com/rid=305263869d602bf6eed8',
     stories:[
       {image:'civic-1151-bopiliao.webp',title:'剝皮寮的轉身',meta:'從清代老街到當代藝術的經營實踐',text:'在歷史街區裡閱讀常民生活　文化保存與空間活化如何彼此對話'},
@@ -88,6 +88,37 @@ const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 const cleanTeacher = name => String(name || '').replace(/老師$|老$/,'');
 const teacherLabel = name => `${cleanTeacher(name)}老師`;
 const storyImage = story => FACEBOOK_STORY_IMAGES[story.id] || story.images[0];
+
+function interleaveStoriesByCourse(stories){
+  const groups = new Map();
+  stories.forEach(story => {
+    const key = String(story.course || '未分類課程').trim();
+    if (!groups.has(key)) groups.set(key,[]);
+    groups.get(key).push(story);
+  });
+  const queues = [...groups.values()];
+  const result = [];
+  while (result.length < stories.length){
+    queues.forEach(queue => {
+      if (queue.length) result.push(queue.shift());
+    });
+  }
+  for (let index = 1; index < result.length; index += 1){
+    if (result[index].course !== result[index - 1].course) continue;
+    const repeated = result.splice(index,1)[0];
+    const start = Math.max(1,Math.floor(result.length / 3));
+    let insertion = -1;
+    for (let offset = 0; offset < result.length; offset += 1){
+      const position = 1 + ((start - 1 + offset) % Math.max(1,result.length - 1));
+      if (result[position - 1]?.course !== repeated.course && result[position]?.course !== repeated.course){
+        insertion = position;
+        break;
+      }
+    }
+    result.splice(insertion < 0 ? result.length : insertion,0,repeated);
+  }
+  return result;
+}
 const figureOrder = [3,7,1,6,4,0,5,2];
 const loopRailState = new WeakMap();
 
@@ -218,7 +249,8 @@ function renderTeachers(){
 }
 
 function renderStories(){
-  renderInfiniteRail($('#storyList'),DATA.stories,(story,index,copy) => `
+  const balancedStories = interleaveStoriesByCourse(DATA.stories);
+  renderInfiniteRail($('#storyList'),balancedStories,(story,index,copy) => `
     <article class="story-card" data-story="${escapeHTML(story.id)}" tabindex="${copy === 1 ? '0' : '-1'}"${copy === 1 ? '' : ' aria-hidden="true"'}>
       <div class="story-image"><img loading="lazy" src="${escapeHTML(storyImage(story))}" alt="${escapeHTML(story.course)}學習紀錄"></div>
       <div class="story-copy">
@@ -282,14 +314,14 @@ function openAction(id){
 }
 
 function openCivic(id){
-  const civic = CIVIC_WEEKS.find(item => item.id === id);
+  const civic = LEARNING_ACTIONS.find(item => item.id === id);
   if (!civic) return;
-  showModal(`<span class="eyebrow">${escapeHTML(civic.semester)} · CIVIC WEEK ARCHIVE｜公民週現場</span>
+  showModal(`<span class="eyebrow">${escapeHTML(civic.semester)} · LEARNING ACTIONS｜學習行動</span>
     <h2>${escapeHTML(civic.title)}</h2>
     <p class="civic-intro">${escapeHTML(civic.date)}　${escapeHTML(civic.count)}</p>
     <p>${escapeHTML(civic.intro)}</p>
     <div class="civic-modal-grid">${civic.stories.map(story => `<article><img src="${escapeHTML(story.image)}" alt="${escapeHTML(story.title)}活動紀錄"><small>${escapeHTML(story.meta)}</small><h3>${escapeHTML(story.title)}</h3><p>${escapeHTML(story.text)}</p></article>`).join('')}</div>
-    <p><a class="text-button" target="_blank" rel="noopener" href="${escapeHTML(civic.link)}">查看當期完整活動資訊 ↗</a></p>`);
+    <p><a class="text-button" target="_blank" rel="noopener" href="${escapeHTML(civic.link)}">查看完整學習行動資訊 ↗</a></p>`);
 }
 
 function openFramework(){
@@ -339,14 +371,6 @@ document.addEventListener('click', event => {
   if (event.target.closest('#moreTeachers')) slideRail($('#teacherRail'));
   if (event.target.closest('#moreStories')) slideRail($('#storyList'));
   if (event.target.closest('#moreActions')) slideRail($('#actionRail'));
-  if (event.target.closest('#brandFilmSound')){
-    const video = $('#brandFilm');
-    video.muted = !video.muted;
-    const button = $('#brandFilmSound');
-    button.setAttribute('aria-pressed',String(!video.muted));
-    button.textContent = video.muted ? '開啟聲音 ＋' : '關閉聲音 −';
-    if (video.paused) video.play().catch(() => {});
-  }
   if (event.target.id === 'clearFilters'){
     activeDomain = '';
     activeGroup = '';
