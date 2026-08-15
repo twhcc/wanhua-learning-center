@@ -106,3 +106,64 @@ dialog{width:min(980px,94vw);max-height:90vh;border:0;padding:0;background:#f7f5
   .filter-row>span{width:100%;margin-bottom:2px}
   .filter-chip{padding:9px 2px;margin-right:11px}
 }
+
+/* Version 3: moving images, verified teaching photos and civic-week archive */
+.brand-film{position:relative;min-height:82vh;background:#17241e;color:#f7f4ea;overflow:hidden}
+.brand-film:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,34,28,.87) 0%,rgba(22,34,28,.5) 46%,rgba(22,34,28,.08) 77%)}
+.brand-film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.8}
+.brand-film-copy{position:relative;z-index:1;min-height:82vh;width:min(680px,70vw);padding:17vh 8vw;display:flex;flex-direction:column;justify-content:center}
+.brand-film-copy h2{font-family:var(--title);font-size:clamp(48px,6vw,90px);line-height:1.35;font-weight:500;margin:35px 0}
+.brand-film-copy>p:not(.label){font-family:var(--title);font-size:20px;line-height:2;max-width:610px}
+.brand-film-copy button{align-self:flex-start;margin-top:35px;padding:10px 0;border:0;border-bottom:1px solid rgba(255,255,255,.65);background:transparent;color:inherit;font-size:11px;letter-spacing:.1em;cursor:pointer}
+.portrait-real img{object-fit:cover;padding:0;filter:saturate(.82) contrast(.98)}
+.teacher-card:hover .portrait-real img{filter:saturate(1)}
+.moving-stories{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:6vw;align-items:start;margin-top:145px;padding-top:110px;border-top:1px solid var(--line)}
+.moving-story-short{margin-top:180px}
+.moving-story video{width:100%;background:#263a31;display:block;object-fit:cover}
+.moving-story-main video{aspect-ratio:16/9}
+.moving-story-short video{aspect-ratio:4/3}
+.moving-story .label{margin:22px 0 0}
+.moving-story h3{font-family:var(--title);font-size:clamp(29px,3.2vw,49px);line-height:1.5;font-weight:500;margin:16px 0}
+.moving-story-short h3{font-size:clamp(27px,2.5vw,39px)}
+.moving-story>p:last-child{line-height:1.9;max-width:680px}
+.civic-week{background:#e1e7dd}
+.civic-grid{display:grid;grid-template-columns:1fr 1fr;gap:5vw}
+.civic-card{border:0;background:transparent;padding:0;text-align:left;cursor:pointer;color:inherit}
+.civic-card:nth-child(2){margin-top:150px}
+.civic-card img{width:100%;height:min(70vh,720px);object-fit:cover;object-position:top;background:#f5f3eb;transition:transform .55s ease,filter .3s ease}
+.civic-card:hover img{transform:translateY(-6px);filter:saturate(1.04)}
+.civic-card span{display:block;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.civic-card small{display:block;font-size:10px;letter-spacing:.09em}
+.civic-card b{display:block;font-family:var(--title);font-size:clamp(32px,4vw,56px);line-height:1.45;font-weight:500;margin:16px 0}
+.civic-card i{display:block;font-style:normal;line-height:1.9}
+.civic-card em{display:block;font-style:normal;font-size:11px;font-weight:500;letter-spacing:.07em;margin-top:24px}
+.civic-modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:55px}
+.civic-modal-grid img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.civic-modal-grid small{display:block;font-size:10px;letter-spacing:.05em;line-height:1.6;margin-top:16px}
+.civic-modal-grid h3{font-size:24px;margin:10px 0}
+.civic-modal-grid p{font-size:14px;line-height:1.8}
+.civic-intro{font-size:12px;letter-spacing:.08em;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0}
+.course-live-link{grid-column:2/4;display:flex;justify-content:space-between;gap:25px;align-items:center;margin:16px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.06em}
+.course-live-link a{border-bottom:1px solid currentColor;padding-bottom:4px;font-weight:500}
+
+@media(max-width:760px){
+  .brand-film,.brand-film-copy{min-height:76vh}
+  .brand-film:after{background:linear-gradient(0deg,rgba(22,34,28,.88) 0%,rgba(22,34,28,.35) 72%,rgba(22,34,28,.12))}
+  .brand-film-copy{width:100%;padding:13vh 7vw 10vh;justify-content:flex-end}
+  .brand-film-copy h2{font-size:43px;margin:25px 0}
+  .brand-film-copy>p:not(.label){font-size:16px;line-height:1.9}
+  .moving-stories{display:block;margin-top:95px;padding-top:75px}
+  .moving-story-short{margin-top:75px}
+  .moving-story h3,.moving-story-short h3{font-size:31px}
+  .civic-grid{display:block}
+  .civic-card{display:block;width:100%}
+  .civic-card:nth-child(2){margin-top:80px}
+  .civic-card img{height:auto;max-height:none;aspect-ratio:3/4;object-fit:cover;object-position:top}
+  .civic-card b{font-size:35px}
+  .civic-modal-grid{grid-template-columns:1fr;gap:48px}
+  .course-live-link{display:block;margin-top:30px}
+  .course-live-link span,.course-live-link a{display:block}
+  .course-live-link a{margin-top:12px;width:max-content}
+}
+
+@media(prefers-reduced-motion:reduce){.brand-film video{display:none}.brand-film{background:url('wanhua-brand-film-poster.jpg') center/cover no-repeat}.civic-card img{transition:none}}

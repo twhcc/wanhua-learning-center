@@ -19,7 +19,7 @@
       <span>WANHUA COMMUNITY COLLEGE<small>臺北市萬華社區大學</small></span>
     </a>
     <nav id="mainNav" aria-label="主要選單">
-      <a href="#fields">課程領域</a><a href="#faculty">社區師資</a><a href="#community">社區行動</a><a href="#stories">學習故事</a><a href="#explore">探索課程</a>
+      <a href="#fields">課程領域</a><a href="#faculty">社區師資</a><a href="#community">社區行動</a><a href="#civic-week">公民週</a><a href="#stories">學習故事</a><a href="#explore">探索課程</a>
     </nav>
     <button class="menu" aria-controls="mainNav" aria-expanded="false">MENU <span>選單</span></button>
   </header>
@@ -29,7 +29,7 @@
       <div class="hero-copy">
         <p class="label">WANHUA AS A CAMPUS｜以萬華為校園</p>
         <h1>在社區裡學習<br><i>也在學習裡<br class="mobile-break">重新認識社區</i></h1>
-        <p class="lead">萬華是一座可以閱讀、探索、學習與參與的城市。社區大學在這裡串聯人、地方、知識與行動。</p>
+        <p class="lead">萬華是一個可以閱讀、探索、學習與參與的地區。社區大學在這裡串聯人、地方、知識與行動。</p>
       </div>
       <figure class="hero-image">
         <img src="story-14-photo-01.webp" alt="單車樂活小旅行的戶外學習紀錄">
@@ -45,6 +45,18 @@
         <p>街區的紋理、居民的記憶、日常的技藝與共同面對的議題，都是課程的一部分。每一次走讀、創作、練習與對話，都讓我們重新看見生活所在的地方。</p>
       </div>
       <aside>城市 → 人 → 學習 → 地方 → 行動 → 故事</aside>
+    </section>
+
+    <section class="brand-film reveal" aria-labelledby="brandFilmTitle">
+      <video id="brandFilm" autoplay muted loop playsinline preload="metadata" poster="wanhua-brand-film-poster.jpg">
+        <source src="wanhua-brand-film.mp4" type="video/mp4">
+      </video>
+      <div class="brand-film-copy">
+        <p class="label">MOVING CITY｜流動的萬華</p>
+        <h2 id="brandFilmTitle">萬華是一座<br>正在學習的城市</h2>
+        <p>從環境關懷到文化深耕　從課堂共學到社區行動　真實的人與地方讓學習持續發生</p>
+        <button id="brandFilmSound" type="button" aria-pressed="false">開啟聲音 ＋</button>
+      </div>
     </section>
 
     <section id="fields" class="fields section-space">
@@ -124,11 +136,47 @@
       </div>
       <button id="moreActions" class="rail-action" type="button" aria-controls="actionRail">EXPLORE MORE ACTIONS｜繼續瀏覽社區行動 <span aria-hidden="true">→</span></button>
       <div class="community-note reveal"><p class="label">FROM CLASSROOM TO COMMUNITY｜從課堂走向社區</p><p>走讀、環境觀察、社區照顧、志工服務與惜物分享，讓課程的影響不只停在一學期，而是回到萬華的日常與公共生活。</p></div>
+      <div class="moving-stories">
+        <article class="moving-story moving-story-main reveal">
+          <video controls playsinline preload="none" poster="wanhua-learning-in-motion-poster.jpg">
+            <source src="wanhua-learning-in-motion.mp4" type="video/mp4">
+          </video>
+          <p class="label">LEARNING IN MOTION｜學習現場</p>
+          <h3>一學期的學習<br>在剝皮寮成為彼此看見的成果</h3>
+          <p>114 秋季成果展留下表演　創作　手作與交流的真實片段　點擊播放完整紀錄</p>
+        </article>
+        <article class="moving-story moving-story-short reveal">
+          <video controls playsinline preload="none" poster="community-temple-action-poster.jpg">
+            <source src="community-temple-action.mp4" type="video/mp4">
+          </video>
+          <p class="label">SHORT FIELD NOTE｜行動短片</p>
+          <h3>從麵線塔到龍山寺<br>把民俗課帶進地方日常</h3>
+          <p>歡喜看廟會課程以實作理解信仰文化　也讓課堂和街區自然相遇</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="civic-week" class="civic-week section-space">
+      <header class="chapter-head reveal">
+        <div><p class="index">05</p><p class="label">CIVIC WEEK ARCHIVE｜公民週現場</p></div>
+        <h2>一週打開城市<br>讓公共議題進入日常</h2>
+        <p>公民週不是課表之外的插曲　而是邀請所有人共同閱讀地方　理解社會　練習參與的開放學習現場</p>
+      </header>
+      <div class="civic-grid">
+        <button class="civic-card civic-card-1142 reveal" type="button" data-civic="1142">
+          <img src="civic-1142-cover.webp" alt="114-2 公民週萬華文化深耕活動資訊">
+          <span><small>114-2｜2025.10.27–10.31　16 場免費活動</small><b>萬華文化深耕</b><i>河岸記憶　市場日常　民間信仰　青草智慧　地方戶籍</i><em>OPEN ARCHIVE｜觀看公民週紀錄 →</em></span>
+        </button>
+        <button class="civic-card civic-card-1151 reveal" type="button" data-civic="1151">
+          <img src="civic-1151-cover.webp" alt="115-1 公民週巷弄裡的永續方舟活動資訊">
+          <span><small>115-1｜2026.04.27–05.04　17 場免費活動</small><b>巷弄裡的永續方舟</b><i>環境永續　文化深耕　公民素養　科技與共融生活</i><em>OPEN ARCHIVE｜觀看公民週紀錄 →</em></span>
+        </button>
+      </div>
     </section>
 
     <section id="stories" class="stories section-space">
       <header class="chapter-head reveal">
-        <div><p class="index">05</p><p class="label">STORIES FROM THE CITY｜城市裡的學習故事</p></div>
+        <div><p class="index">06</p><p class="label">STORIES FROM THE CITY｜城市裡的學習故事</p></div>
         <h2>每一段學習<br>都為城市留下新的註解</h2>
         <p>真實的課程照片與匿名化學員心得，記錄改變如何在日常裡慢慢發生。</p>
       </header>
@@ -138,7 +186,7 @@
 
     <section id="explore" class="course-explorer section-space">
       <header class="explore-head reveal">
-        <div><p class="index">06</p><p class="label">COURSE EXPLORER｜課程探索</p></div>
+        <div><p class="index">07</p><p class="label">COURSE EXPLORER｜課程探索</p></div>
         <h2 id="courseTitle">找到下一段學習旅程</h2>
         <label for="courseSearch">SEARCH｜搜尋課程</label>
         <input id="courseSearch" type="search" placeholder="輸入課名、教師或關鍵字">
@@ -160,6 +208,7 @@
           </div>
           <div class="filter-status"><button id="clearFilters" type="button">清除篩選</button></div>
         </div>
+        <p class="course-live-link"><span>115 年秋季班課程資料</span><a href="https://whcc.twcu.org.tw/course/m_course_list.php" target="_blank" rel="noopener">查看即時招生與名額 ↗</a></p>
       </header>
       <div id="courseGrid" class="course-list"></div>
       <button id="moreCourses" class="text-button">VIEW MORE COURSES｜瀏覽更多課程</button>

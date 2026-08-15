@@ -1,4 +1,32 @@
 const DATA = window.WANHUA_DATA;
+const TEACHER_PHOTOS = {
+  '孫家偉':{src:'teacher-sun-jiawei.webp',position:'50% 32%'},
+  '許家偉':{src:'teacher-hsu-jiawei.webp',position:'50% 32%'},
+  '呂江銘':{src:'teacher-lu-jiangming.webp',position:'50% 34%'},
+  '李欣融':{src:'teacher-li-xinrong.webp',position:'50% 32%'}
+};
+const CIVIC_WEEKS = [
+  {
+    id:'1142',semester:'114-2',date:'2025.10.27–10.31',count:'16 場免費講座與走讀',title:'萬華文化深耕',
+    intro:'從萬華土地出發　走進街巷　傾聽故事　在歷史　地域與當代生活之間重新理解地方的文化脈動',
+    link:'https://www.beclass.com/rid=305018068e624796d1c9',
+    stories:[
+      {image:'civic-1142-market.webp',title:'空的市場　滿的故事',meta:'艋舺市場空間走讀｜陳乃嘉老師',text:'從市場格局　巷弄尺度與攤商生活出發　理解空間如何承接地方日常與城市變遷'},
+      {image:'civic-1142-herbs.webp',title:'走進百年青草巷',meta:'認識臺灣青草的外用價值｜薛淑芬老師',text:'沿著西昌街辨識地方常民知識　從植物的氣味與用途重新看見青草文化的當代價值'},
+      {image:'civic-1142-records.webp',title:'從戶籍資料閱讀地方',meta:'日本時期戶籍資料探索與解讀｜吳讚軒老師',text:'讓一頁頁舊資料成為理解家族　人口移動與萬華社會變遷的入口'}
+    ]
+  },
+  {
+    id:'1151',semester:'115-1',date:'2026.04.27–05.04',count:'17 場深度走讀與專業講座',title:'巷弄裡的永續方舟',
+    intro:'以環境永續與地方學為核心　從老街　市場　水岸　高齡議題到 AI 科技　尋找城市共榮的生活解答',
+    link:'https://www.beclass.com/rid=305263869d602bf6eed8',
+    stories:[
+      {image:'civic-1151-bopiliao.webp',title:'剝皮寮的轉身',meta:'從清代老街到當代藝術的經營實踐',text:'在歷史街區裡閱讀常民生活　文化保存與空間活化如何彼此對話'},
+      {image:'civic-1151-brain.webp',title:'讓健康成為可以練習的日常',meta:'失智預防與腦力檢測',text:'從知識分享與實際檢測開始　把高齡社會的照顧議題帶回每個人的生活選擇'},
+      {image:'civic-1151-ai.webp',title:'讓科技成為生活的工具',meta:'AI 生活應用與職場資訊能力',text:'從對話式 AI 走向自動化應用　協助學員理解科技並建立面對變動的能力'}
+    ]
+  }
+];
 const COMMUNITY_ACTIONS = [
   {
     id:'river-forum',date:'2026.08.01',type:'RIVER ACTION｜流域行動',image:'action-river-forum.webp',
@@ -178,9 +206,10 @@ function renderCourses(){
 function renderTeachers(){
   renderInfiniteRail($('#teacherRail'),DATA.teachers,(teacher,index,copy) => {
     const figure = figureOrder[index % figureOrder.length] + 1;
+    const photo = TEACHER_PHOTOS[teacher.name];
     const visibleName = teacher.name === '孫家偉' ? '孫家偉老師' : teacher.name;
     return `<article class="teacher-card" data-teacher="${escapeHTML(teacher.id)}" tabindex="${copy === 1 ? '0' : '-1'}"${copy === 1 ? '' : ' aria-hidden="true"'}>
-      <div class="portrait"><img loading="lazy" src="figure-${String(figure).padStart(2,'0')}.png" alt="社區師資公仔 ${figure}"></div>
+      <div class="portrait${photo ? ' portrait-real' : ''}"><img loading="lazy" src="${photo ? photo.src : `figure-${String(figure).padStart(2,'0')}.png`}" alt="${photo ? `${escapeHTML(visibleName)}的教學現場` : `社區師資公仔 ${figure}`}"${photo ? ` style="object-position:${photo.position}"` : ''}></div>
       <h3>${escapeHTML(visibleName)}</h3>
       <p>${escapeHTML(teacher.verified_specialty || teacher.specialties.slice(0,2).join('・'))}</p>
       <small>VIEW PROFILE｜查看教師資料 →</small>
@@ -252,6 +281,17 @@ function openAction(id){
     <div class="story-full-text">${action.paragraphs.map(paragraph => `<p>${escapeHTML(paragraph)}</p>`).join('')}</div>`);
 }
 
+function openCivic(id){
+  const civic = CIVIC_WEEKS.find(item => item.id === id);
+  if (!civic) return;
+  showModal(`<span class="eyebrow">${escapeHTML(civic.semester)} · CIVIC WEEK ARCHIVE｜公民週現場</span>
+    <h2>${escapeHTML(civic.title)}</h2>
+    <p class="civic-intro">${escapeHTML(civic.date)}　${escapeHTML(civic.count)}</p>
+    <p>${escapeHTML(civic.intro)}</p>
+    <div class="civic-modal-grid">${civic.stories.map(story => `<article><img src="${escapeHTML(story.image)}" alt="${escapeHTML(story.title)}活動紀錄"><small>${escapeHTML(story.meta)}</small><h3>${escapeHTML(story.title)}</h3><p>${escapeHTML(story.text)}</p></article>`).join('')}</div>
+    <p><a class="text-button" target="_blank" rel="noopener" href="${escapeHTML(civic.link)}">查看當期完整活動資訊 ↗</a></p>`);
+}
+
 function openFramework(){
   showModal(`<span class="eyebrow">ABOUT LEARNING｜學習架構</span><h2>三大領域連結終身學習與永續行動</h2>
     <div class="framework-visual"><article><b>LOCAL｜地方</b><h3>萬華地方學</h3><p>從地方歷史、文化、產業與街區出發。</p></article><article><b>SUSTAINABLE｜永續</b><h3>永續實踐</h3><p>讓環境意識成為日常生活的行動。</p></article><article><b>ACTIVE｜活躍</b><h3>活躍老化</h3><p>以健康、創作與參與支持終身學習。</p></article></div>
@@ -292,11 +332,21 @@ document.addEventListener('click', event => {
   if (story) return openStory(story.dataset.story);
   const action = event.target.closest('.action-story');
   if (action) return openAction(action.dataset.action);
+  const civic = event.target.closest('[data-civic]');
+  if (civic) return openCivic(civic.dataset.civic);
   if (event.target.closest('.close')) $('#modal').close();
   if (event.target.id === 'moreCourses'){ courseLimit += 9; renderCourses(); }
   if (event.target.closest('#moreTeachers')) slideRail($('#teacherRail'));
   if (event.target.closest('#moreStories')) slideRail($('#storyList'));
   if (event.target.closest('#moreActions')) slideRail($('#actionRail'));
+  if (event.target.closest('#brandFilmSound')){
+    const video = $('#brandFilm');
+    video.muted = !video.muted;
+    const button = $('#brandFilmSound');
+    button.setAttribute('aria-pressed',String(!video.muted));
+    button.textContent = video.muted ? '開啟聲音 ＋' : '關閉聲音 −';
+    if (video.paused) video.play().catch(() => {});
+  }
   if (event.target.id === 'clearFilters'){
     activeDomain = '';
     activeGroup = '';
@@ -321,6 +371,7 @@ document.addEventListener('keydown', event => {
   if (target.matches('.teacher-card')) openTeacher(target.dataset.teacher);
   if (target.matches('.story-card')) openStory(target.dataset.story);
   if (target.matches('.action-story')) openAction(target.dataset.action);
+  if (target.matches('[data-civic]')) openCivic(target.dataset.civic);
 });
 
 $('#courseSearch').addEventListener('input',() => { courseLimit = 9; renderCourses(); });
@@ -331,6 +382,12 @@ const observer = new IntersectionObserver(entries => entries.forEach(entry => {
   if (entry.isIntersecting) entry.target.classList.add('visible');
 }),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(item => observer.observe(item));
+
+const brandFilm = $('#brandFilm');
+if (brandFilm && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  brandFilm.autoplay = false;
+  brandFilm.pause();
+}
 
 renderCourses();
 renderTeachers();
